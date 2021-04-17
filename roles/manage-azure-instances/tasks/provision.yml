@@ -1,0 +1,112 @@
+- name: Set resource facts
+  set_fact:
+    azure_resource_group:  "{{ name_prefix }}-resource"
+    azure_storage_account: "{{ (name_prefix + 'storage') | lower | regex_replace('[^0-9a-z]+', '') }}"
+    azure_virtual_network: "{{ name_prefix }}-network"
+    azure_virtual_subnet:  "{{ (name_prefix + 'subnet')  | lower | regex_replace('[^0-9a-z]+', '') }}"
+
+
+# Create a resource group
+- name: Azure | Create a resource group
+  azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+    state: present
+
+# Create a virtual network
+- name: Azure | Create virtual network
+  azure_rm_virtualnetwork:
+    resource_group: "{{ azure_resource_group }}"  
+    name: "{{ azure_virtual_network }}"
+    address_prefixes_cidr:
+        - "{{ ptr_zone_cidr }}"
+    dns_servers:
+        - "8.8.8.8"
+  register: virtual_network_facts
+
+# Create a subnet and associate with the virtual network
+- name: Create a subnet
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_virtual_subnet }}"
+    virtual_network_name: "{{ azure_virtual_network }}"
+    address_prefix_cidr: "{{ ptr_zone_cidr }}"
+
+
+################### Build Instances ###################
+- name: Launch instance
+  azure_rm_virtualmachine:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ name_prefix + '-' + vm_name }}"
+    vm_size: "{{ vms[vm].instance_type }}"
+    managed_disk_type: "{{ azure_storage_account_type }}"
+    admin_username: "{{ azure_admin_user }}"
+    admin_password: "{{ azure_admin_pass }}"
+    started: True
+    os_type: Windows
+    state: present
+    public_ip_allocation_method: Dynamic
+    virtual_network_name: "{{ azure_virtual_network }}"
+    subnet_name: "{{ azure_virtual_subnet }}"
+    open_ports: "{{ vms[vm].ports }}"
+    tags:
+      Name: "{{ name_prefix + '-' + vm_name }}"
+      App: AnsibleTest
+    image:
+      publisher: "{{ vms[vm].publisher }}"
+      offer: "{{ vms[vm].offer }}"
+      version: "{{ vms[vm].version }}"
+      sku: "{{ vms[vm].sku }}"
+  with_sequence: count=1
+  register: vm_job
+  async: 7200
+  poll: 0
+
+################### Wait for Jobs ###################
+- name: Wait for instance creation to complete
+  async_status: jid="{{ item.ansible_job_id }}"
+  register: vm_instances
+  until: vm_instances.finished
+  retries: 300
+  with_items: 
+    - "{{ vm_job.results }}"
+
+################### Custom VM Extension ###################  
+- name: Windows create VM Extension
+  azure_rm_virtualmachine_extension:
+    resource_group: "{{ azure_resource_group }}"    
+    name: custom-script
+    virtual_machine_name: "{{ item.invocation.module_args.name }}"
+    publisher: Microsoft.Compute
+    virtual_machine_extension_type: CustomScriptExtension
+    type_handler_version: 1.9
+    settings: '{"fileUris": ["https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"],"commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File ConfigureRemotingForAnsible.ps1 -ForceNewSSLCert -EnableCredSSP"}'
+    auto_upgrade_minor_version: true
+  with_items: "{{ vm_instances.results }}"
+  when: vms[vm].type == "Windows"
+  async: 7200
+  poll: 0
+
+################### Add Hosts ###################
+- name: Add new instance to host group
+  add_host:
+    hostname: "{{ name_prefix + '-' + vm_name }}"
+    ansible_host: "{{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+    private_ip:  "{{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
+    ansible_port: "{{ vms[vm].ansible_port | default(omit) }}"
+    ansible_user: "{{ azure_admin_user }}"
+    ansible_password: "{{ azure_admin_pass }}"
+    ansible_become_pass: "{{ azure_admin_pass }}"
+    ansible_connection: "{{ vms[vm].ansible_connection | default(omit) }}"
+    ansible_winrm_transport: "{{ vms[vm].ansible_winrm_transport | default(omit) }}"
+    ansible_winrm_server_cert_validation: "{{ vms[vm].ansible_winrm_server_cert_validation | default(omit) }}"
+    groups: servers
+  with_items: "{{ vm_instances.results }}" 
+
+################### Wait for Instances ###################
+- name: Wait for Instances to come up
+  wait_for_connection:
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['servers'] }}" 
+
+

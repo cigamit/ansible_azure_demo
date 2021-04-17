@@ -1,0 +1,44 @@
+instance_loc: azure
+name_prefix: MAPS
+
+# Needed for reverse lookup DNS setup
+ptr_zone_name: "230.0.10.in-addr.arpa"
+ptr_zone_cidr: "10.0.230.0/24"
+
+azure_storage_account_type: Standard_LRS
+
+vms:
+  Windows:
+    type: Windows
+    instance_type: Standard_A4_v2
+    publisher: MicrosoftWindowsServer
+    offer: WindowsServer
+    sku: 2016-Datacenter
+    version: latest
+    ports:
+      - 80
+      - 8080
+      - 443
+      - 5986  # WinRM secure
+      - 5985  # WinRM
+      - 3389  # RDP
+    ansible_port: 5986
+    ansible_connection: winrm
+    ansible_winrm_transport: credssp
+    ansible_winrm_server_cert_validation: ignore
+  CentOS:
+    type: Linux
+    instance_type: Standard_A4_v2
+    publisher: OpenLogic
+    offer: CentOS
+    sku: 7.5
+    version: latest
+    ports:
+      - 22
+      - 80
+      - 8080
+      - 443
+
+# Below is UTF-16 Base64 encoding for:
+#   Invoke-Expression -Command ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1')); Enable-WSManCredSSP -Role Server -Force
+winrm_enable_script: SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAALQBDAG8AbQBtAGEAbgBkACAAKAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABTAHkAcwB0AGUAbQAuAE4AZQB0AC4AVwBlAGIAQwBsAGkAZQBuAHQAKQAuAEQAbwB3AG4AbABvAGEAZABTAHQAcgBpAG4AZwAoACcAaAB0AHQAcABzADoALwAvAHIAYQB3AC4AZwBpAHQAaAB1AGIAdQBzAGUAcgBjAG8AbgB0AGUAbgB0AC4AYwBvAG0ALwBhAG4AcwBpAGIAbABlAC8AYQBuAHMAaQBiAGwAZQAvAGQAZQB2AGUAbAAvAGUAeABhAG0AcABsAGUAcwAvAHMAYwByAGkAcAB0AHMALwBDAG8AbgBmAGkAZwB1AHIAZQBSAGUAbQBvAHQAaQBuAGcARgBvAHIAQQBuAHMAaQBiAGwAZQAuAHAAcwAxACcAKQApADsAIABFAG4AYQBiAGwAZQAtAFcAUwBNAGEAbgBDAHIAZQBkAFMAUwBQACAALQBSAG8AbABlACAAUwBlAHIAdgBlAHIAIAAtAEYAbwByAGMAZQA=

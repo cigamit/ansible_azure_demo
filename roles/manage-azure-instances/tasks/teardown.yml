@@ -1,0 +1,82 @@
+---
+- name: Set resource facts
+  set_fact:
+    azure_resource_group:  "{{ name_prefix }}-resource"
+    azure_storage_account: "{{ (name_prefix + 'storage') | lower | regex_replace('[^0-9a-z]+', '') }}"
+    azure_virtual_network: "{{ name_prefix }}-network"
+    azure_virtual_subnet:  "{{ (name_prefix + 'subnet')  | lower | regex_replace('[^0-9a-z]+', '') }}"
+
+################### Destroy Instances ###################
+- name: Azure | Destroy instance
+  azure_rm_virtualmachine:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ name_prefix }}-{{ vm_name }}"
+    started: False
+    state: absent
+  with_sequence: count=1
+  register: vm_jobs
+  async: 7200
+  poll: 0
+
+################### Wait for Jobs ###################
+
+- name: Wait for instance deletion to complete
+  async_status: jid="{{ item.ansible_job_id }}"
+  register: instances
+  until: instances.finished
+  retries: 600
+  with_items: "{{ vm_jobs.results }}"
+  ignore_errors: yes
+
+################### Remove Network Interfaces ###################
+
+- name: Azure | Delete network interface
+  azure_rm_networkinterface:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ name_prefix + '-' + vm_name }}"
+    state: absent
+  ignore_errors: yes
+
+################### Remove Security Groups ###################
+
+- name: Azure | Delete Security Group
+  azure_rm_securitygroup:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ name_prefix + '-' + vm_name }}"
+    state: absent
+  ignore_errors: yes
+
+################### Remove Public IP Addresses ###################
+
+- name: Azure | Delete Public IP Addresses
+  azure_rm_publicipaddress:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ name_prefix + '-' + vm_name }}"
+    state: absent
+  ignore_errors: yes
+
+################### Remove Subnets ###################
+
+- name: Azure | Destroy subnet
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"    
+    name: "{{ azure_virtual_subnet }}"
+    virtual_network_name: "{{ azure_virtual_network }}"
+    address_prefix_cidr: "{{ ptr_zone_cidr }}"     
+    state: absent
+  ignore_errors: yes
+
+- name: Azure | Destroy virtual network
+  azure_rm_virtualnetwork:
+    resource_group: "{{ azure_resource_group }}"  
+    name: "{{ azure_virtual_network }}" 
+    address_prefixes_cidr:
+        - "{{ ptr_zone_cidr }}"
+    state: absent
+  ignore_errors: yes
+
+- name: Azure | Destroy resource group
+  azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+    state: absent
