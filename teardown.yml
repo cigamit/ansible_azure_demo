@@ -8,8 +8,6 @@
     - manage-instances
   vars:
     teardown: true
-    vm: CentOS
-    vm_name: CentOS
   tasks:
   - include_role:
       name: "manage-{{ instance_loc }}-instances"
