@@ -1,3 +1,5 @@
+################### Resources ###################
+
 - name: Set resource facts
   set_fact:
     azure_resource_group:  "{{ name_prefix }}-resource"
