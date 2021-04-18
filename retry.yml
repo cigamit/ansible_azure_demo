@@ -5,7 +5,7 @@
   tasks:
   - name: Fail if we tried too many times
     fail:
-      when: (deploy_try | int) > 2
+    when: (deploy_try | int) > 2
 
   - name: Let's give it another go
     uri:
