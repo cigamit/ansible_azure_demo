@@ -8,7 +8,7 @@
 
   - name: Let's give it another go
     uri:
-      url:  "{{ lookup('env', 'TOWER_HOST') }}/api/v2/workflow_job_templates/112/launch/"
+      url:  "{{ lookup('env', 'TOWER_HOST') }}api/v2/workflow_job_templates/112/launch/"
       method: POST
       user: "{{ lookup('env', 'TOWER_USERNAME') }}"
       password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
