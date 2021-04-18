@@ -96,6 +96,8 @@
     ansible_winrm_server_cert_validation: "{{ vms[vm].ansible_winrm_server_cert_validation | default(omit) }}"
     groups: new_deploy
   no_log: true
+  retries: 3
+  delay: 10
 
 - name: Add Host to Tower Inventory
   uri:
@@ -113,6 +115,8 @@
       - 400
   register: response
   changed_when: response.status == 201
+  retries: 3
+  delay: 10
 
 ################### Wait for Instances ###################
 - name: Wait for Instances to come up
