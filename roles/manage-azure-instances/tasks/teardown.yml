@@ -75,7 +75,7 @@
   register: hresponse
   changed_when: response.status == 204
   when: item.inventory  == 5
-  loop: "{{ response.results }}"
+  loop: "{{ response.json.results }}"
 
 
 ################### Remove Subnets ###################
