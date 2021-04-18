@@ -60,38 +60,29 @@
       version: "{{ vms[vm].version }}"
       sku: "{{ vms[vm].sku }}"
   register: vm_job
-  async: 7200
-  poll: 0
 
-
-################### Wait for Jobs ###################
-- name: Wait for instance creation to complete
-  async_status: jid="{{ vm_job.ansible_job_id }}"
-  register: vm_instances
-  until: vm_instances.finished
-  retries: 300
+- debug:
+    var: vm_job
 
 ################### Custom VM Extension ###################
 - name: Windows create VM Extension
   azure_rm_virtualmachine_extension:
     resource_group: "{{ azure_resource_group }}"    
     name: custom-script
-    virtual_machine_name: "{{ vm_instances.invocation.module_args.name }}"
+    virtual_machine_name: "{{ name_prefix + '-' + vm_name }}"
     publisher: Microsoft.Compute
     virtual_machine_extension_type: CustomScriptExtension
     type_handler_version: 1.9
     settings: '{"fileUris": ["https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"],"commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File ConfigureRemotingForAnsible.ps1 -ForceNewSSLCert -EnableCredSSP"}'
     auto_upgrade_minor_version: true
   when: vms[vm].type == "Windows"
-  async: 7200
-  poll: 0
 
 ################### Add Hosts ###################
 - name: Add new instance to host group
   add_host:
     hostname: "{{ name_prefix + '-' + vm_name }}"
-    ansible_host: "{{ vm_instances.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
-    private_ip:  "{{ vm_instances.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
+    ansible_host: "{{ vm_job.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+    private_ip:  "{{ vm_job.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
     ansible_port: "{{ vms[vm].ansible_port | default(omit) }}"
     ansible_user: "{{ azure_admin_user }}"
     ansible_password: "{{ azure_admin_pass }}"
