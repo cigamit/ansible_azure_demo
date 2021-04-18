@@ -3,19 +3,25 @@
   hosts: localhost
   gather_facts: False
   tasks:
+  - debug:
+      var: vars
+
   - name: Let's give it another go
-    tower_workflow_launch:
-      workflow_template: "Azure Provision Workflow"
-      extra_vars: "---
-
-name_prefix: {{ name_prefix }}
-
-vm: {{ vm }}
-
-vm_name: {{ vm_name }}
-
-deploy_try: {{ (deploy_try | int) + 1 }}
-
-"
-      wait: no
+    uri:
+      url:  "{{ TOWER_HOST }}/api/v2/workflow_job_templates/112/launch/"
+      method: POST
+      user: "{{ TOWER_USERNAME }}"
+      password: "{{ TOWER_PASSWORD }}"
+      body:
+        name_prefix: "{{ name_prefix }}"
+        vm: "{{ vm }}"
+        vm_name: "{{ vm_name }}"
+        deploy_try: "{{ (deploy_try | int) + 1 }}"
+      body_format: json
+      validate_certs: False
+      force_basic_auth: yes
+      status_code:
+        - 200
+        - 201
+        - 400
     when: (deploy_try | int) < 3
