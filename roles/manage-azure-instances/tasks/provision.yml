@@ -4,6 +4,7 @@
   set_fact:
     newdeploy: New_{{ lookup('pipe', 'echo ($RANDOM')+1000) }}
 
+- name: Pass NewDeploy variable to next playbooks
   set_stats:
     data:
       newdeploy: "{{ newdeploy }}"
