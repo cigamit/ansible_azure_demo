@@ -59,12 +59,14 @@
       offer: "{{ vms[vm].offer }}"
       version: "{{ vms[vm].version }}"
       sku: "{{ vms[vm].sku }}"
-  with_sequence: count=1
   register: vm_job
   async: 7200
   poll: 0
 
 ################### Wait for Jobs ###################
+- debug:
+    var: vm_job
+
 - name: Wait for instance creation to complete
   async_status: jid="{{ item.ansible_job_id }}"
   register: vm_instances
