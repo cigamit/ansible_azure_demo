@@ -87,6 +87,7 @@
     ansible_winrm_transport: "{{ vms[vm].ansible_winrm_transport | default(omit) }}"
     ansible_winrm_server_cert_validation: "{{ vms[vm].ansible_winrm_server_cert_validation | default(omit) }}"
     groups: new_deploy
+  no_log: true
 
 ################### Wait for Instances ###################
 - name: Wait for Instances to come up
