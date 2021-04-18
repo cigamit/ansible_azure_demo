@@ -45,7 +45,7 @@
     admin_username: "{{ azure_admin_user }}"
     admin_password: "{{ azure_admin_pass }}"
     started: True
-    os_type: Windows
+    os_type: "{{ vms[vm].type ||"
     state: present
     public_ip_allocation_method: Dynamic
     virtual_network_name: "{{ azure_virtual_network }}"

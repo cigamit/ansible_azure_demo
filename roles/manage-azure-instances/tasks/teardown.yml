@@ -33,7 +33,7 @@
 - name: Azure | Delete network interface
   azure_rm_networkinterface:
     resource_group: "{{ azure_resource_group }}"
-    name: "{{ name_prefix + '-' + vm_name }}"
+    name: "{{ name_prefix + '-' + vm_name + '01' }}"
     state: absent
   ignore_errors: yes
 
@@ -42,7 +42,7 @@
 - name: Azure | Delete Security Group
   azure_rm_securitygroup:
     resource_group: "{{ azure_resource_group }}"
-    name: "{{ name_prefix + '-' + vm_name }}"
+    name: "{{ name_prefix + '-' + vm_name + '01' }}"
     state: absent
   ignore_errors: yes
 
@@ -51,7 +51,7 @@
 - name: Azure | Delete Public IP Addresses
   azure_rm_publicipaddress:
     resource_group: "{{ azure_resource_group }}"
-    name: "{{ name_prefix + '-' + vm_name }}"
+    name: "{{ name_prefix + '-' + vm_name + '01' }}"
     state: absent
   ignore_errors: yes
 
