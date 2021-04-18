@@ -3,7 +3,7 @@ common:
     packages:
       - mlocate
       - wget
-  Windows
+  Windows:
     packages:
       - 7zip
       - jre8
