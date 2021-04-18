@@ -1,4 +1,4 @@
 harden_role:
-  CentOS: "harden-rhel"
+  CentOS: "harden-rhel7"
   Windows: "harden-windows"
 
