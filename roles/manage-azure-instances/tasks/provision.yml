@@ -90,12 +90,12 @@
     ansible_connection: "{{ vms[vm].ansible_connection | default(omit) }}"
     ansible_winrm_transport: "{{ vms[vm].ansible_winrm_transport | default(omit) }}"
     ansible_winrm_server_cert_validation: "{{ vms[vm].ansible_winrm_server_cert_validation | default(omit) }}"
-    groups: servers
+    groups: new_deploy
 
 ################### Wait for Instances ###################
 - name: Wait for Instances to come up
   wait_for_connection:
   delegate_to: "{{ item }}"
-  with_items: "{{ groups['servers'] }}" 
+  with_items: "{{ groups['new_deploy'] }}" 
 
 
