@@ -2,7 +2,7 @@
   
 - name: Generate new group
   set_fact:
-    newdeploy: New_{{ lookup('pipe', 'echo ($RANDOM')+1000' }}
+    newdeploy: New_{{ lookup('pipe', 'echo ($RANDOM)+1000' }}
 
 - name: Pass NewDeploy variable to next playbooks
   set_stats:
