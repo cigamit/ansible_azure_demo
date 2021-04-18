@@ -62,6 +62,9 @@
   register: vm_job
   async: 7200
   poll: 0
+  args:
+    warn: false
+
 
 ################### Wait for Jobs ###################
 - name: Wait for instance creation to complete
@@ -69,8 +72,6 @@
   register: vm_instances
   until: vm_instances.finished
   retries: 300
-  args:
-    warn: false
 
 ################### Custom VM Extension ###################
 - name: Windows create VM Extension
