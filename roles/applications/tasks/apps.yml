@@ -1,11 +1,4 @@
 - name: Install Applications
-  debug: 
-    msg: "apps/{{ apps[vm][item] }}.yml"
-  loop: "{{ install_apps }}"
-  ignore_errors: true
-
-
-- name: Install Applications
   include_tasks: "apps/{{ apps[vm][item] }}.yml"
   loop: "{{ install_apps }}"
   ignore_errors: true
