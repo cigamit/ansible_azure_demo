@@ -1,0 +1,8 @@
+---
+- name: Harden Server
+  hosts: "{{ vm_name }}"
+  vars_files:
+    - 'vars/harden.yml'
+  tasks:
+    - include_role:
+        name: "{{ harden-role[vm] }}"
