@@ -1,0 +1,4 @@
+- name: Install Applications
+  include_tasks: "{{ apps[vm][item] }}".yml
+  loop: install_apps
+  ignore_errors: true

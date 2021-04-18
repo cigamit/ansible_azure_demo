@@ -1,0 +1,10 @@
+- name: Install mariadb
+  yum:
+    name: maridb
+    state: present
+
+- name: Start and Enable mariadb
+  service:
+    name: mariadb
+    state: started
+    enabled: yes

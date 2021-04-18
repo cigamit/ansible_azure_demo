@@ -9,4 +9,11 @@ common:
       - 7zip
       - vscode
 
-
+apps:
+  CentOS:
+    WebServer: centos_nginx
+    Database:  centos_mariadb
+  Windows:
+    WebServer: windows_iis
+    Database: windows_sql2019exp
+    DomainController: windows_dc

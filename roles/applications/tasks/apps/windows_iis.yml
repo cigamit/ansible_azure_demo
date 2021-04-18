@@ -1,0 +1,13 @@
+- name: Install IIS Web-Server with sub features and management tools
+  win_feature:
+    name: Web-Server
+    state: present
+    restart: True
+    #include_sub_features: True
+    #include_management_tools: True
+
+- name: Create Demo IIS site
+  win_iis_website:
+    name: "Default Web Site"
+    state: started
+  register: website
