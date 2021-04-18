@@ -1,5 +1,5 @@
 ################### Resources ###################
-  
+
 - name: Pass variables to next playbooks
   set_stats:
     data:
@@ -25,9 +25,8 @@
     resource_group: "{{ azure_resource_group }}"  
     name: "{{ azure_virtual_network }}"
     address_prefixes_cidr:
-        - "{{ ptr_zone_cidr }}"
-    dns_servers:
-        - "8.8.8.8"
+        - "{{ networks[env].ptr_zone_cidr }}"
+    dns_servers: "{{ networks[env].dns_servers }}"
 
 # Create a subnet and associate with the virtual network
 - name: Create a subnet
@@ -35,7 +34,7 @@
     resource_group: "{{ azure_resource_group }}"
     name: "{{ azure_virtual_subnet }}"
     virtual_network_name: "{{ azure_virtual_network }}"
-    address_prefix_cidr: "{{ ptr_zone_cidr }}"
+    address_prefix_cidr: "{{ networks[env].ptr_zone_cidr }}"
 
 
 ################### Build Instances ###################
