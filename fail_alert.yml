@@ -1,0 +1,9 @@
+---
+- name: Alert
+  hosts: localhost
+  gather_facts: False
+  tasks:
+  - name: We failed to provision and then cleanup so sent out an alert
+    debug:
+      msg: "ALERT!!!"
+  

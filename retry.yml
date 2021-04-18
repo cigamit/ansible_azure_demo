@@ -10,7 +10,7 @@
 name_prefix: {{ name_prefix }}
 vm: {{ vm }}
 vm_name: {{ vm_name }}
-deploy_try: {{ deploy_try + 1 }}
+deploy_try: {{ (deploy_try | int) + 1 }}
 "
       wait: no
-    when: deploy_try < 3
+    when: (deploy_try | int) < 3
