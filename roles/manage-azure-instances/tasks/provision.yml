@@ -69,6 +69,8 @@
   register: vm_instances
   until: vm_instances.finished
   retries: 300
+  args:
+    warn: false
 
 ################### Custom VM Extension ###################
 - name: Windows create VM Extension
