@@ -71,7 +71,7 @@
   retries: 300
 
 ################### Custom VM Extension ###################
--debug:
+- debug:
    var: vm_instances
 
 - name: Windows create VM Extension
