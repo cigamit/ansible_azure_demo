@@ -56,6 +56,8 @@
       - 400
   register: response
   changed_when: response.status == 201
+  retries: 5
+  delay: 10
 
 - name: Delete Host
   uri:
@@ -76,7 +78,8 @@
   changed_when: response.status == 204
   when: item.inventory  == 5
   loop: "{{ response.json.results }}"
-
+  retries: 5
+  delay: 10
 
 ################### Remove Subnets ###################
 
