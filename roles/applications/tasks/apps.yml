@@ -1,5 +1,5 @@
 - name: Install Applications
-  deubg: 
+  debug: 
     msg: "{{ apps[vm][item] }}.yml"
   loop: install_apps
   ignore_errors: true
