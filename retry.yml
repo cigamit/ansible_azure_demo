@@ -3,38 +3,29 @@
   hosts: localhost
   gather_facts: False
   tasks:
+
   - name: Fail if we tried too many times
     fail:
     when: (deploy_try | int) > 2
 
-#  - name: Let's give it another go
-#    uri:
-#      url:  "{{ lookup('env', 'TOWER_HOST') }}api/v2/workflow_job_templates/112/launch/"
-#      method: POST
-#      user: "{{ lookup('env', 'TOWER_USERNAME') }}"
-#      password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
-#      body:
-#        extra_vars:
-#          name_prefix: "{{ name_prefix }}"
-#          vm: "{{ vm }}"
-#          vm_name: "{{ vm_name }}"
-#          deploy_try: "{{ (deploy_try | int) + 1 }}"
-#      body_format: json
-#      validate_certs: False
-#      force_basic_auth: yes
-#      status_code:
-#        - 200
-#        - 201
-#        - 400
-#    when: (deploy_try | int) < 3
-
-  - name: Launch a Workflow with parameters without waiting
-    tower_workflow_launch:
-      workflow_template: "Azure Provision Workflow"
-      extra_vars: >
-        name_prefix: "{{ name_prefix }}",
-        vm: "{{ vm }}",
-        vm_name: "{{ vm_name }}",
-        deploy_try: "{{ (deploy_try | int) + 1 }}",
-      wait: False
+  - name: Let's give it another go
+    uri:
+      url:  "{{ lookup('env', 'TOWER_HOST') }}api/v2/workflow_job_templates/112/launch/"
+      method: POST
+      user: "{{ lookup('env', 'TOWER_USERNAME') }}"
+      password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
+      body:
+        extra_vars:
+          name_prefix: "{{ name_prefix }}"
+          vm: "{{ vm }}"
+          vm_name: "{{ vm_name }}"
+          deploy_try: "{{ (deploy_try | int) + 1 }}"
+      body_format: json
+      validate_certs: False
+      force_basic_auth: yes
+      status_code:
+        - 200
+        - 201
+        - 400
+    when: (deploy_try | int) < 3
 

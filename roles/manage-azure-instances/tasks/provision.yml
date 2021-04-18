@@ -10,8 +10,6 @@
       newdeploy: "{{ newdeploy }}"
       deploy_try: "{{ deploy_try | default(1) | int }}"
 
-- fail:
-
 - name: Set resource facts
   set_fact:
     azure_resource_group:  "{{ name_prefix }}-resource"
