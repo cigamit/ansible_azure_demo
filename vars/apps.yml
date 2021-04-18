@@ -7,7 +7,6 @@ common:
   Windows:
     packages:
       - 7zip
-      - jre8
       - vscode
 
 
