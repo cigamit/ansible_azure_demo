@@ -11,7 +11,7 @@ common:
 
 apps:
   CentOS:
-    WebServer: centos_nginx
+    WebServer: centos_httpd
     Database:  centos_mariadb
   Windows:
     WebServer: windows_iis
