@@ -1,0 +1,22 @@
+---
+- name: Provision Instances
+  hosts: localhost
+  gather_facts: False
+  vars_files:
+    - [ 'vars/custom.yml', 'vars/azure.yml' ]
+  tags:
+    - manage-instances
+  vars:
+    teardown: false
+  tasks:
+  - name: Let's give it another go
+    tower_workflow_launch:
+      workflow_template: "Azure Provision Workflow"
+      extra_vars: "---
+name_prefix: {{ name_prefix }}
+vm: {{ vm }}
+vm_name: {{ vm_name }}
+deploy_try: {{ deploy_try + 1 }}
+"
+      wait: no
+    when: deploy_try < 3

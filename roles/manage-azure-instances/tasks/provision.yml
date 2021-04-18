@@ -8,7 +8,7 @@
   set_stats:
     data:
       newdeploy: "{{ newdeploy }}"
-      deploy_try: "{{ (deploy_try | default(0)) + 1 }}"
+      deploy_try: "{{ (deploy_try | default(1)) }}"
 
 - name: Set resource facts
   set_fact:
