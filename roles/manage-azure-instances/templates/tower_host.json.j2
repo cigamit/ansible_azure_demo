@@ -4,5 +4,5 @@
     "inventory": 5,
     "enabled": true,
     "instance_id": "",
-    "variables": "ansible_host: {{ public_ip }}{% if vms[vm].type == 'Windows' %}ansible_connection: winrm\nansible_winrm_transport: credssp\nansible_winrm_server_cert_validation: ignore{% endif %}"
+    "variables": "ansible_host: {{ public_ip }}{% if vms[vm].type == 'Windows' %}\nansible_connection: winrm\nansible_winrm_transport: credssp\nansible_winrm_server_cert_validation: ignore{% endif %}"
 }
