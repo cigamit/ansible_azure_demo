@@ -7,7 +7,6 @@
     azure_virtual_network: "{{ name_prefix }}-network"
     azure_virtual_subnet:  "{{ (name_prefix + 'subnet')  | lower | regex_replace('[^0-9a-z]+', '') }}"
 
-
 # Create a resource group
 - name: Azure | Create a resource group
   azure_rm_resourcegroup:
@@ -24,7 +23,6 @@
         - "{{ ptr_zone_cidr }}"
     dns_servers:
         - "8.8.8.8"
-  register: virtual_network_facts
 
 # Create a subnet and associate with the virtual network
 - name: Create a subnet
@@ -54,15 +52,13 @@
     tags:
       Name: "{{ name_prefix + '-' + vm_name }}"
       App: AnsibleTest
+      Type: "{{ vms[vm].type }}"
     image:
       publisher: "{{ vms[vm].publisher }}"
       offer: "{{ vms[vm].offer }}"
       version: "{{ vms[vm].version }}"
       sku: "{{ vms[vm].sku }}"
   register: vm_job
-
-- debug:
-    var: vm_job
 
 ################### Custom VM Extension ###################
 - name: Windows create VM Extension
