@@ -93,7 +93,6 @@
     ansible_port: "{{ vms[vm].ansible_port | default(omit) }}"
     ansible_user: "{{ azure_admin_user }}"
     ansible_password: "{{ azure_admin_pass }}"
-    ansible_become_pass: "{{ azure_admin_pass }}"
     ansible_connection: "{{ vms[vm].ansible_connection | default(omit) }}"
     ansible_winrm_transport: "{{ vms[vm].ansible_winrm_transport | default(omit) }}"
     ansible_winrm_server_cert_validation: "{{ vms[vm].ansible_winrm_server_cert_validation | default(omit) }}"
