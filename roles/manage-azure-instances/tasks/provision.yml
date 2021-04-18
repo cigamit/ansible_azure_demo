@@ -99,7 +99,6 @@
     ansible_winrm_transport: "{{ vms[vm].ansible_winrm_transport | default(omit) }}"
     ansible_winrm_server_cert_validation: "{{ vms[vm].ansible_winrm_server_cert_validation | default(omit) }}"
     groups: servers
-  with_items: "{{ vm_instances.results }}" 
 
 ################### Wait for Instances ###################
 - name: Wait for Instances to come up
