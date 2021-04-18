@@ -1,5 +1,5 @@
 ---
-- name: Provision Instances
+- name: Relaunch Workflow
   hosts: localhost
   gather_facts: False
   tasks:
