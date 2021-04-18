@@ -3,6 +3,7 @@ common:
     packages:
       - mlocate
       - wget
+      - telnet
   Windows:
     packages:
       - 7zip
