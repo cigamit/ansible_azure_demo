@@ -1,16 +1,16 @@
 ---
 - name: Set resource facts
   set_fact:
-    azure_resource_group:  "{{ name_prefix }}-resource"
-    azure_storage_account: "{{ (name_prefix + 'storage') | lower | regex_replace('[^0-9a-z]+', '') }}"
-    azure_virtual_network: "{{ name_prefix }}-network"
-    azure_virtual_subnet:  "{{ (name_prefix + 'subnet')  | lower | regex_replace('[^0-9a-z]+', '') }}"
+    azure_resource_group:  "{{ env }}-resource"
+    azure_storage_account: "{{ (env + 'storage') | lower | regex_replace('[^0-9a-z]+', '') }}"
+    azure_virtual_network: "{{ env }}-network"
+    azure_virtual_subnet:  "{{ (env + 'subnet')  | lower | regex_replace('[^0-9a-z]+', '') }}"
 
 ################### Destroy Instances ###################
 - name: Azure | Destroy instance
   azure_rm_virtualmachine:
     resource_group: "{{ azure_resource_group }}"
-    name: "{{ name_prefix }}-{{ vm_name }}"
+    name: "{{ vm_name }}"
     started: False
     state: absent
 
@@ -19,7 +19,7 @@
 - name: Azure | Delete network interface
   azure_rm_networkinterface:
     resource_group: "{{ azure_resource_group }}"
-    name: "{{ name_prefix + '-' + vm_name + '01' }}"
+    name: "{{ vm_name + '01' }}"
     state: absent
   ignore_errors: yes
 
@@ -28,7 +28,7 @@
 - name: Azure | Delete Security Group
   azure_rm_securitygroup:
     resource_group: "{{ azure_resource_group }}"
-    name: "{{ name_prefix + '-' + vm_name + '01' }}"
+    name: "{{ vm_name + '01' }}"
     state: absent
   ignore_errors: yes
 
@@ -37,7 +37,7 @@
 - name: Azure | Delete Public IP Addresses
   azure_rm_publicipaddress:
     resource_group: "{{ azure_resource_group }}"
-    name: "{{ name_prefix + '-' + vm_name + '01' }}"
+    name: "{{ vm_name + '01' }}"
     state: absent
   ignore_errors: yes
 

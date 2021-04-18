@@ -4,14 +4,13 @@
   set_stats:
     data:
       deploy_try: "{{ deploy_try | default(1) | int }}"
-      vmname: "{{ name_prefix + '-' + vm_name }}"
 
 - name: Set resource facts
   set_fact:
-    azure_resource_group:  "{{ name_prefix }}-resource"
-    azure_storage_account: "{{ (name_prefix + 'storage') | lower | regex_replace('[^0-9a-z]+', '') }}"
-    azure_virtual_network: "{{ name_prefix }}-network"
-    azure_virtual_subnet:  "{{ (name_prefix + 'subnet')  | lower | regex_replace('[^0-9a-z]+', '') }}"
+    azure_resource_group:  "{{ env }}-resource"
+    azure_storage_account: "{{ (env + 'storage') | lower | regex_replace('[^0-9a-z]+', '') }}"
+    azure_virtual_network: "{{ env }}-network"
+    azure_virtual_subnet:  "{{ (env + 'subnet')  | lower | regex_replace('[^0-9a-z]+', '') }}"
 
 # Create a resource group
 - name: Azure | Create a resource group
@@ -43,7 +42,7 @@
 - name: Launch instance
   azure_rm_virtualmachine:
     resource_group: "{{ azure_resource_group }}"
-    name: "{{ name_prefix + '-' + vm_name }}"
+    name: "{{ vm_name }}"
     vm_size: "{{ vms[vm].instance_type }}"
     managed_disk_type: "{{ azure_storage_account_type }}"
     admin_username: "{{ azure_admin_user }}"
@@ -56,7 +55,8 @@
     subnet_name: "{{ azure_virtual_subnet }}"
     open_ports: "{{ vms[vm].ports }}"
     tags:
-      Name: "{{ name_prefix + '-' + vm_name }}"
+      Env: "{{ env }}"
+      Name: "{{ vm_name }}"
       App: AnsibleTest
       Type: "{{ vms[vm].type }}"
     image:
@@ -71,7 +71,7 @@
   azure_rm_virtualmachine_extension:
     resource_group: "{{ azure_resource_group }}"    
     name: custom-script
-    virtual_machine_name: "{{ name_prefix + '-' + vm_name }}"
+    virtual_machine_name: "{{ vm_name }}"
     publisher: Microsoft.Compute
     virtual_machine_extension_type: CustomScriptExtension
     type_handler_version: 1.9
@@ -86,7 +86,7 @@
 
 - name: Add new instance to host group
   add_host:
-    hostname: "{{ name_prefix + '-' + vm_name }}"
+    hostname: "{{ vm_name }}"
     ansible_host: "{{ public_ip }}"
     private_ip: "{{ private_ip }}"
     ansible_port: "{{ vms[vm].ansible_port | default(omit) }}"

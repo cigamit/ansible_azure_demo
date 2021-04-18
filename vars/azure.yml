@@ -1,5 +1,5 @@
 instance_loc: azure
-name_prefix: MAPS
+env: PROD
 
 # Needed for reverse lookup DNS setup
 ptr_zone_name: "230.0.10.in-addr.arpa"

@@ -1,6 +1,6 @@
 ---
 - name: Install application stack
-  hosts: "{{ vmname }}"
+  hosts: "{{ vm_name }}"
   vars_files:
     - 'vars/apps.yml'
   roles:
