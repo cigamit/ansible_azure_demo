@@ -1,0 +1,13 @@
+- name: Install YUM Packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ common[vm].packages }}"
+  when: ansible_os_family == 'RedHat'
+
+- name: Install Windows Chocolatey Packages
+  chocolatey:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ common[vm].packages }}"
+  when: ansible_os_family == 'Windows'
