@@ -13,18 +13,6 @@
     name: "{{ name_prefix }}-{{ vm_name }}"
     started: False
     state: absent
-  register: vm_job
-  async: 7200
-  poll: 0
-
-################### Wait for Jobs ###################
-
-- name: Wait for instance deletion to complete
-  async_status: jid="{{ vm_job.ansible_job_id }}"
-  register: instances
-  until: instances.finished
-  retries: 600
-  ignore_errors: yes
 
 ################### Remove Network Interfaces ###################
 
@@ -78,3 +66,5 @@
     name: "{{ azure_resource_group }}"
     location: "{{ azure_location }}"
     state: absent
+  ignore_errors: yes
+
