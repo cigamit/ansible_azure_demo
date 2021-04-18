@@ -2,7 +2,7 @@
   
 - name: Generate new group
   set_fact:
-    newdeploy: New_{{ range(1000, 9999) }}
+    newdeploy: New_{{ range(1000, 9999) | random }}
 
 - name: Pass NewDeploy variable to next playbooks
   set_stats:
