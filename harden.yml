@@ -4,12 +4,5 @@
   vars_files:
     - 'vars/harden.yml'
   tasks:
-    - debug:
-        var: harden_role
-
-    - debug:
-        msg: "{{ harden_role[vm] }}"
-
-
     - include_role:
         name: "{{ harden_role[vm] }}"
