@@ -1,6 +1,6 @@
 - name: Install mariadb
   yum:
-    name: maridb
+    name: mariadb
     state: present
 
 - name: Start and Enable mariadb
