@@ -13,8 +13,7 @@
     name: "{{ name_prefix }}-{{ vm_name }}"
     started: False
     state: absent
-  with_sequence: count=1
-  register: vm_jobs
+  register: vm_job
   async: 7200
   poll: 0
 

@@ -64,18 +64,16 @@
   poll: 0
 
 ################### Wait for Jobs ###################
-- debug:
-    var: vm_job
-
 - name: Wait for instance creation to complete
-  async_status: jid="{{ item.ansible_job_id }}"
+  async_status: jid="{{ vm_job.ansible_job_id }}"
   register: vm_instances
   until: vm_instances.finished
   retries: 300
-  with_items: 
-    - "{{ vm_job.results }}"
 
-################### Custom VM Extension ###################  
+################### Custom VM Extension ###################
+-debug:
+   var: vm_instances
+
 - name: Windows create VM Extension
   azure_rm_virtualmachine_extension:
     resource_group: "{{ azure_resource_group }}"    
