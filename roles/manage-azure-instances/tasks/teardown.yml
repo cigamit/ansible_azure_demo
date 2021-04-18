@@ -43,28 +43,28 @@
 
 ################### Remove Subnets ###################
 
-- name: Azure | Destroy subnet
-  azure_rm_subnet:
-    resource_group: "{{ azure_resource_group }}"    
-    name: "{{ azure_virtual_subnet }}"
-    virtual_network_name: "{{ azure_virtual_network }}"
-    address_prefix_cidr: "{{ ptr_zone_cidr }}"     
-    state: absent
-  ignore_errors: yes
+#- name: Azure | Destroy subnet
+#  azure_rm_subnet:
+#    resource_group: "{{ azure_resource_group }}"    
+#    name: "{{ azure_virtual_subnet }}"
+#    virtual_network_name: "{{ azure_virtual_network }}"
+#    address_prefix_cidr: "{{ ptr_zone_cidr }}"     
+#    state: absent
+#  ignore_errors: yes
 
-- name: Azure | Destroy virtual network
-  azure_rm_virtualnetwork:
-    resource_group: "{{ azure_resource_group }}"  
-    name: "{{ azure_virtual_network }}" 
-    address_prefixes_cidr:
-        - "{{ ptr_zone_cidr }}"
-    state: absent
-  ignore_errors: yes
+#- name: Azure | Destroy virtual network
+#  azure_rm_virtualnetwork:
+#    resource_group: "{{ azure_resource_group }}"  
+#    name: "{{ azure_virtual_network }}" 
+#    address_prefixes_cidr:
+#        - "{{ ptr_zone_cidr }}"
+#    state: absent
+#  ignore_errors: yes
 
-- name: Azure | Destroy resource group
-  azure_rm_resourcegroup:
-    name: "{{ azure_resource_group }}"
-    location: "{{ azure_location }}"
-    state: absent
-  ignore_errors: yes
+#- name: Azure | Destroy resource group
+#  azure_rm_resourcegroup:
+#    name: "{{ azure_resource_group }}"
+#    location: "{{ azure_location }}"
+#    state: absent
+#  ignore_errors: yes
 
