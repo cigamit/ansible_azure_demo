@@ -21,11 +21,10 @@
 ################### Wait for Jobs ###################
 
 - name: Wait for instance deletion to complete
-  async_status: jid="{{ item.ansible_job_id }}"
+  async_status: jid="{{ vm_job.ansible_job_id }}"
   register: instances
   until: instances.finished
   retries: 600
-  with_items: "{{ vm_jobs.results }}"
   ignore_errors: yes
 
 ################### Remove Network Interfaces ###################
