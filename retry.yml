@@ -6,10 +6,16 @@
   - name: Let's give it another go
     tower_workflow_launch:
       workflow_template: "Azure Provision Workflow"
-      extra_vars: 
-        name_prefix: "{{ name_prefix }}"
-        vm: "{{ vm }}"
-        vm_name: "{{ vm_name }}"
-        deploy_try: "{{ (deploy_try | int) + 1 }}"
+      extra_vars: "---
+
+name_prefix: {{ name_prefix }}
+
+vm: {{ vm }}
+
+vm_name: {{ vm_name }}
+
+deploy_try: {{ (deploy_try | int) + 1 }}
+
+"
       wait: no
     when: (deploy_try | int) < 3
