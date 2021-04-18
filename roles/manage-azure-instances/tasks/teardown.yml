@@ -41,6 +41,25 @@
     state: absent
   ignore_errors: yes
 
+################### Remove from Tower ###################
+- name: Get host
+  uri:
+    url: "{{ lookup('env', 'TOWER_HOST') }}/api/v2/hosts/?name={{ vm_name }}"
+    method: GET
+    user: "{{ lookup('env', 'TOWER_USERNAME') }}"
+    password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
+    validate_certs: False
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 201
+      - 400
+  register: response
+  changed_when: response.status == 201
+
+- debug:
+    var: response
+
 ################### Remove Subnets ###################
 
 #- name: Azure | Destroy subnet
