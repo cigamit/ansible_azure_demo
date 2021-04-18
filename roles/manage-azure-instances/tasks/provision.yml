@@ -9,6 +9,7 @@
     data:
       newdeploy: "{{ newdeploy }}"
       deploy_try: "{{ deploy_try | default(1) | int }}"
+      vmname: "{{ name_prefix + '-' + vm_name }}"
 
 - name: Set resource facts
   set_fact:
@@ -85,11 +86,15 @@
   when: vms[vm].type == "Windows"
 
 ################### Add Hosts ###################
+- set_fact:
+    public_ip: "{{ vm_job.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+    private_ip: "{{ vm_job.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
+
 - name: Add new instance to host group
   add_host:
     hostname: "{{ name_prefix + '-' + vm_name }}"
-    ansible_host: "{{ vm_job.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
-    private_ip:  "{{ vm_job.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
+    ansible_host: "{{ public_ip }}"
+    private_ip: "{{ private_ip }}"
     ansible_port: "{{ vms[vm].ansible_port | default(omit) }}"
     ansible_user: "{{ azure_admin_user }}"
     ansible_password: "{{ azure_admin_pass }}"
@@ -98,6 +103,23 @@
     ansible_winrm_server_cert_validation: "{{ vms[vm].ansible_winrm_server_cert_validation | default(omit) }}"
     groups: new_deploy
   no_log: true
+
+- name: Add Host to Tower Inventory
+  uri:
+    url:  "{{ lookup('env', 'TOWER_HOST') }}/api/v2/hosts/"
+    method: POST
+    user: "{{ lookup('env', 'TOWER_USERNAME') }}"
+    password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
+    body: "{{ lookup('template','tower_host.json.j2') }}"
+    body_format: json
+    validate_certs: False
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 201
+      - 400
+  register: response
+  changed_when: response.status == 201
 
 ################### Wait for Instances ###################
 - name: Wait for Instances to come up

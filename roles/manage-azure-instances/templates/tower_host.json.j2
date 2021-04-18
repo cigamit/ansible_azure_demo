@@ -1,0 +1,12 @@
+{
+    "name": "{{ name_prefix + '-' + vm_name }}",
+    "description": "",
+    "inventory": 5,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "ansible_host: {{ public_ip }}
+{% if vms[vm].type == 'Windows' %}
+ansible_connection: winrm
+ansible_winrm_transport: credssp
+ansible_winrm_server_cert_validation: ignore{% endif %}"
+}
