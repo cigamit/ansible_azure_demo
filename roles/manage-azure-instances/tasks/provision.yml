@@ -1,4 +1,12 @@
 ################### Resources ###################
+  
+- name: Generate new group
+  set_fact:
+    newdeploy: New_{{ lookup('pipe', 'echo ($RANDOM')+1000) }}
+
+  set_stats:
+    data:
+      newdeploy: "{{ newdeploy }}"
 
 - name: Set resource facts
   set_fact:
@@ -53,6 +61,7 @@
       Name: "{{ name_prefix + '-' + vm_name }}"
       App: AnsibleTest
       Type: "{{ vms[vm].type }}"
+      Deployed: "{{ newdeploy }}"
     image:
       publisher: "{{ vms[vm].publisher }}"
       offer: "{{ vms[vm].offer }}"
