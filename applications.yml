@@ -1,0 +1,7 @@
+---
+- name: Install application stack
+  hosts: all
+  vars_files:
+    - 'vars/apps.yml'
+  roles:
+    - applications

@@ -1,0 +1,12 @@
+common:
+  CentOS:
+    packages:
+      - mlocate
+      - wget
+  Windows
+    packages:
+      - 7zip
+      - jre8
+      - vscode
+
+
