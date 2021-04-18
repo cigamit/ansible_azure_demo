@@ -1,4 +1,4 @@
-harden-role:
+harden_role:
   CentOS: "harden-rhel"
   Windows: "harden-windows"
 

@@ -5,11 +5,11 @@
     - 'vars/harden.yml'
   tasks:
     - debug:
-        var: harden-role
+        var: harden_role
 
     - debug:
-        msg: "{{ harden-role[vm] }}"
+        msg: "{{ harden_role[vm] }}"
 
 
     - include_role:
-        name: "{{ harden-role[vm] }}"
+        name: "{{ harden_role[vm] }}"
