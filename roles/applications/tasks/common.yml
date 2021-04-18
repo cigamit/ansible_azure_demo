@@ -6,7 +6,7 @@
   when: ansible_os_family == 'RedHat'
 
 - name: Install Windows Chocolatey Packages
-  chocolatey:
+  win_chocolatey:
     name: "{{ item }}"
     state: present
   loop: "{{ common[vm].packages }}"
