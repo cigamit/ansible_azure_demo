@@ -5,6 +5,6 @@
 
 - name: Start and Enable mariadb
   service:
-    name: mysql
+    name: mysqld
     state: started
     enabled: yes
