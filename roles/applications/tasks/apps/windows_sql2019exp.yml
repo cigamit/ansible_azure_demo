@@ -1,4 +1,3 @@
-choco install 
 - name: Install SQL Server Express 2019
   win_chocolatey:
     name: sql-server-express
