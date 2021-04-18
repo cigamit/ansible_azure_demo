@@ -19,6 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ['preview'],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = """
 ---
@@ -52,6 +55,7 @@ options:
           - days since 1970/01/01 when password was last changed
             or date in format YYYY-MM-DD
           - chage option = -d, --lastday
+        aliases: [ lastday ]
 
     sp_min:
         required: false
@@ -59,6 +63,7 @@ options:
         description:
           - set minimum number of days between changes
           - chage option = -m, --mindays
+        aliases: [ mindays ]
 
     sp_max:
         required: false
@@ -67,6 +72,7 @@ options:
           - set maximum number of days between changes
           - chage option = -M, --maxdays
           - remove the field by passing value of -1
+        aliases: [ maxdays ]
 
     sp_warn:
         required: false
@@ -75,6 +81,7 @@ options:
           - set number of days before password expiry
             to warn user to change the password
           - chage option = -W, --warndays
+        aliases: [ warndays ]
 
     sp_inact:
         required: false
@@ -83,6 +90,7 @@ options:
           - set number of days the account may be inactive
           - chage option = -I, --inactive
           - remove the field by passing value of -1
+        aliases: [ inactive ]
 
     sp_expire:
         required: false
@@ -92,14 +100,19 @@ options:
             or date in format YYYY-MM-DD
           - chage option = -E, --expiredate
           - remove the field by passing value of -1
+        aliases: [ expiredate ]
 """
 
 EXAMPLES = """
 # force password change on next login
 - chage: user=john sp_lstchg=0
+# or:
+- chage: user=john lastday=0
 
 # remove an account expiration date.
 - chage: user=john sp_expire=-1
+# or using argument alias:
+- chage: user=john expiredate=-1
 
 # set inactivity days after password expired before account is locked
 - chage: user=john sp_inact=14
@@ -110,7 +123,7 @@ EXAMPLES = """
 # display user password warn days
 - chage: user=john
   register: shadow_data
-- debug: msg={{shadow_data.sp_expire}}
+- debug: msg={{shadow_data.sp_warn}}
 """
 
 def _convert_date(str):  # convert YYYY-MM-DD to days since 1/1/1970
@@ -124,14 +137,14 @@ def main():
     module = AnsibleModule(
         argument_spec = dict(
             user      = dict(required=True),
-            sp_lstchg = dict(required=False, default=None),
-            sp_min    = dict(required=False, default=None),
-            sp_max    = dict(required=False, default=None),
-            sp_warn   = dict(required=False, default=None),
-            sp_inact  = dict(required=False, default=None),
-            sp_expire = dict(required=False, default=None),
+            sp_lstchg = dict(required=False, aliases=['lastday'],    default=None),
+            sp_min    = dict(required=False, aliases=['mindays'],    default=None),
+            sp_max    = dict(required=False, aliases=['maxdays'],    default=None),
+            sp_warn   = dict(required=False, aliases=['warndays'],   default=None),
+            sp_inact  = dict(required=False, aliases=['inactive'],   default=None),
+            sp_expire = dict(required=False, aliases=['expiredate'], default=None),
         ),
-        supports_check_mode = False,    # TODO
+        supports_check_mode = True
     )
 
     user = module.params['user']
@@ -139,8 +152,8 @@ def main():
     current_shadow = None
     try:
         f = open('/etc/shadow', 'r')
-    except IOError, (errno, strerror):
-        message = "unable to open /etc/shadow, I/O error(%s): %s" % (errno, strerror)
+    except IOError as err:
+        message = "unable to open /etc/shadow, I/O error(%s): %s" % (err.errno, err.strerror)
         module.fail_json(msg=message)
 
     for line in f.readlines():
@@ -178,7 +191,7 @@ def main():
     import re
     date_pattern = re.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}")
 
-    for param_name, flag_name in chage_flags.iteritems():
+    for param_name, flag_name in chage_flags.items():
         desired_value = module.params[param_name]
         desired_cmd_value = desired_value
 
@@ -208,6 +221,9 @@ def main():
     if cmd.__len__() == 0:
         # no changes needed
         module.exit_json(shadow=current_shadow, changed=False)
+
+    if module.check_mode:
+        module.exit_json(shadow=new_shadow, changed=True)
 
     # complete command and run it
     cmd.insert(0, module.get_bin_path('chage', required=True))
