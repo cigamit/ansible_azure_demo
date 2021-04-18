@@ -59,7 +59,7 @@
 
 - name: Delete Host
   uri:
-    url: "{{ lookup('env', 'TOWER_HOST') }}/api/v2/hosts/{{ item.id }}"
+    url: "{{ lookup('env', 'TOWER_HOST') }}/api/v2/hosts/{{ item.id }}/"
     method: DELETE
     user: "{{ lookup('env', 'TOWER_USERNAME') }}"
     password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
