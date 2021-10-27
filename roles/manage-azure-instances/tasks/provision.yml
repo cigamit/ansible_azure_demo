@@ -13,28 +13,28 @@
     azure_virtual_subnet:  "{{ (env + 'subnet')  | lower | regex_replace('[^0-9a-z]+', '') }}"
 
 # Create a resource group
-#- name: Azure | Create a resource group
-#  azure_rm_resourcegroup:
-#    name: "{{ azure_resource_group }}"
-#    location: "{{ azure_location }}"
-#    state: present
+- name: Azure | Create a resource group
+  azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+    state: present
 
 # Create a virtual network
-#- name: Azure | Create virtual network
-#  azure_rm_virtualnetwork:
-#    resource_group: "{{ azure_resource_group }}"  
-#    name: "{{ azure_virtual_network }}"
-#    address_prefixes_cidr:
-#        - "{{ networks[env].ptr_zone_cidr }}"
-#    dns_servers: "{{ networks[env].dns_servers }}"
+- name: Azure | Create virtual network
+  azure_rm_virtualnetwork:
+    resource_group: "{{ azure_resource_group }}"  
+    name: "{{ azure_virtual_network }}"
+    address_prefixes_cidr:
+        - "{{ networks[env].ptr_zone_cidr }}"
+    dns_servers: "{{ networks[env].dns_servers }}"
 
 # Create a subnet and associate with the virtual network
-#- name: Create a subnet
-#  azure_rm_subnet:
-#    resource_group: "{{ azure_resource_group }}"
-#    name: "{{ azure_virtual_subnet }}"
-#    virtual_network_name: "{{ azure_virtual_network }}"
-#    address_prefix_cidr: "{{ networks[env].ptr_zone_cidr }}"
+- name: Create a subnet
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ azure_virtual_subnet }}"
+    virtual_network_name: "{{ azure_virtual_network }}"
+    address_prefix_cidr: "{{ networks[env].ptr_zone_cidr }}"
 
 
 ################### Build Instances ###################
