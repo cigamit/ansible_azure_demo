@@ -16,6 +16,6 @@
         name: "{{ vm_name }}"
         rules:
             - name: "{{ item.name }}"
-              state: absent
+        state: absent
       when: item.properties.destinationPortRange == "3389"
       loop: "{{ sg.securitygroups[0].properties.securityRules }}"
