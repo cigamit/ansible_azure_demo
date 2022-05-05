@@ -7,7 +7,7 @@
 
     - azure_rm_securitygroup:
         resource_group: "{{ env }}-resource"
-        name: "{{ vm_name }}"
+        name: "{{ sg_name }}"
         purge_rules: yes
         rules:
           - name: HTTP
