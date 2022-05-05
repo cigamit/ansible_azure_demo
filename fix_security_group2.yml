@@ -34,9 +34,9 @@
             destination_port_range: 5986
             protocol: Tcp
             direction: Inbound
-          - name: Deny RDP
+          - name: Allow RDP
             priority: 105
-            access: Deny
+            access: Allow
             destination_port_range: 3389
             protocol: Tcp
             direction: Inbound
