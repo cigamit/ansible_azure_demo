@@ -22,7 +22,7 @@
             protocol: "{{ item.properties.protocol | capitalize }}"
             direction: "{{ item.properties.direction }}"
       when:
-        - item.properties.destinationPortRange == port
+        - item.properties.destinationPortRange == sgport
         - item.properties.direction | lower == direction | lower
       loop: "{{ sg.securitygroups[0].properties.securityRules }}"
 
