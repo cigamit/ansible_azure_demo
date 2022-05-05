@@ -10,31 +10,31 @@
         name: "{{ vm_name }}"
         purge_rules: yes
         rules:
-          - name: Allow HTTP
+          - name: HTTP
             priority: 101
             access: Allow
             destination_port_range: 80
             protocol: Tcp
             direction: Inbound
-          - name: Allow HTTPS
+          - name: HTTPS
             priority: 102
             access: Allow
             destination_port_range: 443
             protocol: Tcp
             direction: Inbound
-          - name: Allow WinRM
+          - name: WinRM
             priority: 103
             access: Allow
             destination_port_range: 5985
             protocol: Tcp
             direction: Inbound
-          - name: Allow WinRMS
+          - name: WinRMS
             priority: 104
             access: Allow
             destination_port_range: 5986
             protocol: Tcp
             direction: Inbound
-          - name: Allow RDP
+          - name: RDP
             priority: 105
             access: Allow
             destination_port_range: 3389
