@@ -25,3 +25,4 @@
         - item.properties.destinationPortRange == port
         - item.properties.direction|lower == direction|lower
       loop: "{{ sg.securitygroups[0].properties.securityRules }}"
+
