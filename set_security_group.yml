@@ -10,10 +10,10 @@
         name: "{{ sg_name }}"
         purge_rules: yes
         rules:
-          - name: HTTP
+          - name: Proxy
             priority: 101
             access: Allow
-            destination_port_range: 80
+            destination_port_range: 8080
             protocol: Tcp
             direction: Inbound
           - name: HTTPS
