@@ -15,7 +15,8 @@
         resource_group: "{{ env }}-resource"
         name: "{{ vm_name }}"
         rules:
-            - name: "{{ item.name }}"
+          - name: "{{ item.name }}"
+            priority: "{{ item.priority }}"
         state: absent
       when: item.properties.destinationPortRange == "3389"
       loop: "{{ sg.securitygroups[0].properties.securityRules }}"
