@@ -18,5 +18,8 @@
           - name: "{{ item.name }}"
             priority: "{{ item.properties.priority }}"
             access: Deny
+            destinationPortRange: 3389
+            protocol: Tcp
+            direction: inbound
       when: item.properties.destinationPortRange == "3389"
       loop: "{{ sg.securitygroups[0].properties.securityRules }}"
