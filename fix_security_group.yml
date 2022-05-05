@@ -18,4 +18,4 @@
             - name: "{{ item.name }}"
               state: absent
       when: "{{ item.properties.destinationPortRange == 3389 }}"
-      loop: "{{ sg.securitygroups.properties.securityRules }}"
+      loop: "{{ sg.securitygroups[0].properties.securityRules }}"
