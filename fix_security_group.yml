@@ -21,5 +21,5 @@
             destination_port_range: "{{ item.properties.destinationPortRange }}"
             protocol: "{{ item.properties.destinationPortRange }}"
             direction: "{{ item.properties.direction }}"
-      when: item.properties.destinationPortRange == port and item.properties.direction == direction
+      when: item.properties.destinationPortRange == port and item.properties.direction|lower == direction|lower
       loop: "{{ sg.securitygroups[0].properties.securityRules }}"
