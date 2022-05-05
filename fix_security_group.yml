@@ -11,13 +11,11 @@
         name: "{{ vm_name }}"
       register: sg
 
-#    - azure_rm_securitygroup:
-#        resource_group: "{{ env }}-resource"
-#        name: "{{ vm_name }}"
-#        rules:
-#            - name: DenyRPD
-#              protocol: Tcp
-#              destination_port_range: 3389
-#              access: Deny
-#              priority: 100
-#              direction: Inbound
+    - azure_rm_securitygroup:
+        resource_group: "{{ env }}-resource"
+        name: "{{ vm_name }}"
+        rules:
+            - name: "{{ item.name }}"
+              state: absent
+      when: "{{ item.properties.destinationPortRange == 3389 }}"
+      loop: "{{ sg.properties.securityRules }}"
