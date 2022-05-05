@@ -17,5 +17,5 @@
         rules:
             - name: "{{ item.name }}"
               state: absent
-      when: item.properties.destinationPortRange == 3389
+      when: item.properties.destinationPortRange == "3389"
       loop: "{{ sg.securitygroups[0].properties.securityRules }}"
