@@ -4,16 +4,15 @@
   connection: local
   
   tasks:
-
     - name: Get facts for one security group
       azure_rm_securitygroup_info:
         resource_group: "{{ env }}-resource"
-        name: "{{ vm_name }}"
+        name: "{{ sg_name }}"
       register: sg
 
     - azure_rm_securitygroup:
         resource_group: "{{ env }}-resource"
-        name: "{{ vm_name }}"
+        name: "{{ sg_name }}"
         rules:
           - name: "{{ item.name }}"
             priority: "{{ item.properties.priority }}"
