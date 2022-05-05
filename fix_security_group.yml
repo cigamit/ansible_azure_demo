@@ -15,7 +15,7 @@
         resource_group: "{{ env }}-resource"
         name: "{{ vm_name }}"
         rules:
-          - name: "{{ item.name | replace('Allow', 'Deny') }}"
+          - name: "{{ item.name }}"
             priority: "{{ item.properties.priority }}"
             access: Deny
             destination_port_range: "{{ item.properties.destinationPortRange }}"
