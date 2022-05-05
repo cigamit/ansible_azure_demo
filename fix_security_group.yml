@@ -1,0 +1,23 @@
+- name: Fix security group
+  hosts: localhost
+  gather_facts: no
+  connection: local
+  
+  tasks:
+
+    - name: Get facts for one security group
+      azure_rm_securitygroup_info:
+        resource_group: "{{ env }}-resource"
+        name: "{{ vm_name }}"
+      register: sg
+
+#    - azure_rm_securitygroup:
+#        resource_group: "{{ env }}-resource"
+#        name: "{{ vm_name }}"
+#        rules:
+#            - name: DenyRPD
+#              protocol: Tcp
+#              destination_port_range: 3389
+#              access: Deny
+#              priority: 100
+#              direction: Inbound
