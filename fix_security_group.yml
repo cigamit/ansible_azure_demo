@@ -19,10 +19,10 @@
             priority: "{{ item.properties.priority }}"
             access: Deny
             destination_port_range: "{{ item.properties.destinationPortRange }}"
-            protocol: "{{ item.properties.protocol }}"
+            protocol: "{{ item.properties.protocol | capitalize }}"
             direction: "{{ item.properties.direction }}"
       when:
         - item.properties.destinationPortRange == port
-        - item.properties.direction|lower == direction|lower
+        - item.properties.direction | lower == direction | lower
       loop: "{{ sg.securitygroups[0].properties.securityRules }}"
 
