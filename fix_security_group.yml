@@ -19,7 +19,7 @@
             priority: "{{ item.properties.priority }}"
             access: Deny
             destination_port_range: "{{ item.properties.destinationPortRange }}"
-            protocol: "{{ item.properties.destinationPortRange }}"
+            protocol: "{{ item.properties.protocol }}"
             direction: "{{ item.properties.direction }}"
       when:
         - item.properties.destinationPortRange == port
