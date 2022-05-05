@@ -16,7 +16,7 @@
         rules:
           - name: "{{ item.name }}"
             priority: "{{ item.properties.priority }}"
-            access: Deny
+            access: "{{ access }}"
             destination_port_range: "{{ item.properties.destinationPortRange }}"
             protocol: "{{ item.properties.protocol | capitalize }}"
             direction: "{{ item.properties.direction }}"
